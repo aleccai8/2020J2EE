@@ -11,6 +11,8 @@ import com.homework.homework4.utils.Base64;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,7 +33,7 @@ import java.util.Map;
 @RequestMapping("/user")
 public class UserController {
 
-    private final Map<String, String> tokens;
+
 
     @Autowired
     private PersonService personService;
@@ -42,9 +44,6 @@ public class UserController {
     @Autowired
     private AipFaceService aipFaceService;
 
-    public UserController(){
-        tokens = new HashMap<>();
-    }
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@Valid UserLoginRequestVo requestVo, BindingResult bindingResult){
@@ -59,11 +58,13 @@ public class UserController {
             map.put("message","用户不存在");
             return ResponseEntity.status(200).body(map);
         }
+        System.out.println(person);
         if(person.getPassword() != null && !person.getPassword().equals(requestVo.getPassword())){
             map.put("message","用户名或密码错误");
             return ResponseEntity.status(200).body(map);
         }
         String token = RandomStringUtils.randomAlphanumeric(5);
+        Map<String,String> tokens = personService.getPersonToken();
         tokens.put(token,person.getId());
         map.put("message","用户登录成功");
         map.put("token",token);
@@ -78,6 +79,7 @@ public class UserController {
             map.put("errors",bindingResult.getFieldErrors());
             return ResponseEntity.status(400).body(map);
         }
+        Map<String,String> tokens = personService.getPersonToken();
         if(tokens.get(requestVo.getToken()) == null){
             map.put("message","请先登录");
             return ResponseEntity.status(401).body(map);
