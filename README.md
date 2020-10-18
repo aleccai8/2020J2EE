@@ -29,7 +29,7 @@
 
 ### 第四次作业添加
 * http://localhost:8000/user/login POST请求 form-data: id:学号/教工号,password:密码 返回值：用户token
-* http://localhost:8000/user/updatePhoto form-data: token:用户token,file:人脸照片
+* http://localhost:8000/user/uploadPhoto form-data: token:用户token,file:人脸照片
 * http://localhost:8000/search/face form-data: file:人脸照片
 
 ### 第五次作业添加
